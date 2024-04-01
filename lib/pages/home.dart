@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:untitled/db/states_db.dart';
 import 'package:untitled/model/states_model.dart';
 import 'package:untitled/widgets/dropdown_search.dart';
@@ -52,10 +53,15 @@ class _HomePageState extends State<HomePage> {
                 final states = snapshot.data!;
 
                 List<String> items = [];
+                List<int> itemsId = [];
 
                 // Iterate through each state and add its text to the items list
                 for (var state in states) {
                   items.add(state.stateName);
+                }
+
+                for (var state in states) {
+                  itemsId.add(state.id);
                 }
 
                 return states.isEmpty
@@ -87,14 +93,18 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const Divider(),
-                          SizedBox(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            child: const DropDowntoSearch(
-                              title: "Select local government",
-                              items: [],
-                            ),
-                          ),
+                          FutureBuilder(
+                              future: null,
+                              builder: (context, snapshot) {
+                                return SizedBox(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: const DropDowntoSearch(
+                                    title: "Select local government",
+                                    items: [],
+                                  ),
+                                );
+                              }),
                         ],
                       );
               }),
