@@ -53,6 +53,19 @@ class StatesDB {
     return States.fromSqfliteDatabase(states.first);
   }
 
+  Future<int?> fetchIdByName(String stateName) async {
+    final database = await DatabaseService().database;
+    final result = await database.rawQuery(
+      '''SELECT id FROM $statesTableName WHERE stateName = ?''',
+      [stateName],
+    );
+    if (result.isNotEmpty) {
+      return result.first['id'] as int;
+    } else {
+      return null; // State with given name not found
+    }
+  }
+
   // update
   Future<int> update({required int id, String? stateName}) async {
     final database = await DatabaseService().database;
@@ -102,6 +115,15 @@ class StatesDB {
     return localGovernments
         .map((data) => LocalGovernment.fromSqfliteDatabase(data))
         .toList();
+  }
+
+  Future<LocalGovernment> fetchLGAById(int id) async {
+    final database = await DatabaseService().database;
+    final states = await database.rawQuery(
+      '''SELECT * from $localGovernmentsTableName WHERE id = ?''',
+      [id],
+    );
+    return LocalGovernment.fromSqfliteDatabase(states.first);
   }
 
   // update local government

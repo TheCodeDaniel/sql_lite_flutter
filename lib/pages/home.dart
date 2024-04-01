@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:untitled/db/states_db.dart';
+import 'package:untitled/model/lga_model.dart';
 import 'package:untitled/model/states_model.dart';
-import 'package:untitled/widgets/dropdown_search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +14,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<States>>? futureStates;
+  String? selectedValue;
+  int? selectedValueID;
   final statesDB = StatesDB();
 
   @override
@@ -40,74 +41,119 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<States>>(
-              future: futureStates,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  );
-                }
+            future: futureStates,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                );
+              }
 
-                final states = snapshot.data!;
+              final states = snapshot.data!;
 
-                List<String> items = [];
-                List<int> itemsId = [];
+              List<String> items = [];
+              // List<int> itemsId = [];
 
-                // Iterate through each state and add its text to the items list
-                for (var state in states) {
-                  items.add(state.stateName);
-                }
+              // Iterate through each state and add its text to the items list
+              for (var state in states) {
+                items.add(state.stateName);
+              }
 
-                for (var state in states) {
-                  itemsId.add(state.id);
-                }
+              // for (var state in states) {
+              //   itemsId.add(state.id);
+              // }
 
-                return states.isEmpty
-                    ? const Center(
-                        child: Text(
-                          "Add new states in 'edit' ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                          ),
-                          textAlign: TextAlign.center,
+              return states.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "Add new states in 'edit' ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
                         ),
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 40),
-                          const Center(
-                            child: Text("Select a state and local government"),
-                          ),
-                          const SizedBox(height: 10),
-                          const Divider(),
-                          SizedBox(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            child: DropDowntoSearch(
-                              title: "Search a state",
-                              items: items,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: DropdownButton<String>(
+                            hint: const Text(
+                              'Select a state',
                             ),
-                          ),
-                          const Divider(),
-                          FutureBuilder(
-                              future: null,
-                              builder: (context, snapshot) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: const DropDowntoSearch(
-                                    title: "Select local government",
-                                    items: [],
-                                  ),
+                            value: selectedValue,
+                            onChanged: (String? value) {
+                              // Do something with the selected value
+                              setState(() {
+                                selectedValue = value;
+                              });
+
+                              statesDB
+                                  .fetchIdByName(selectedValue!)
+                                  .then((value) => {
+                                        setState(() {
+                                          selectedValueID = value;
+                                        }),
+                                      });
+                            },
+                            items: items.map<DropdownMenuItem<String>>(
+                              (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
                                 );
-                              }),
-                        ],
-                      );
-              }),
+                              },
+                            ).toList(),
+                          ),
+                        ),
+                        selectedValue == null
+                            ? const SizedBox()
+                            : FutureBuilder<List<LocalGovernment>>(
+                                future: statesDB.fetchLocalGovernmentsByStateId(
+                                  selectedValueID!,
+                                ),
+                                builder: (context, snapshot) {
+                                  final statesLG = snapshot.data!;
+
+                                  print(
+                                      "This is state's Lg ${statesLG[0].lgName}");
+
+                                  List<String> itemsLG = [];
+
+                                  // Iterate through each state and add its text to the items list
+                                  for (var statelg in statesLG) {
+                                    itemsLG.add(statelg.lgName);
+                                  }
+
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: DropdownButton<String>(
+                                      hint: const Text(
+                                        'Select a local government',
+                                      ),
+                                      value: selectedValue,
+                                      onChanged: (String? value) {},
+                                      items:
+                                          itemsLG.map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        },
+                                      ).toList(),
+                                    ),
+                                  );
+                                },
+                              )
+                      ],
+                    );
+            },
+          ),
         ),
       ),
     );
