@@ -3,14 +3,13 @@ import 'package:untitled/db/database_service.dart';
 import 'package:untitled/model/states_model.dart';
 
 class StatesDB {
-  final tableName = "state";
+  final tableName = "state_table";
 
   Future<void> createTable(Database database) async {
-    await database.execute(""" CREATE TABLE IF NOT  EXISTS $tableName (
-      "id" INTEGER NOT NULL,
-      "stateName" TEXT NOT NULL,
-      PRIMARY KEY("id", AUTOINCREMENT )
-    ) """);
+    await database.execute("""CREATE TABLE IF NOT EXISTS $tableName (
+    "id" INTEGER PRIMARY KEY,
+    "stateName" TEXT NOT NULL
+  )""");
   }
 
   // create
@@ -28,6 +27,7 @@ class StatesDB {
     final states = await database.rawQuery(
       '''SELECT * FROM $tableName''',
     );
+
     return states.map((data) => States.fromSqfliteDatabase(data)).toList();
   }
 

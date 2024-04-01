@@ -9,6 +9,6 @@ class States {
 
   factory States.fromSqfliteDatabase(Map<String, dynamic> map) => States(
         id: map['id'] ?? 0,
-        stateName: map['title'] ?? '',
+        stateName: map['stateName'] ?? '',
       );
 }
