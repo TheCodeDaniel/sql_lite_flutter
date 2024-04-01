@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<List<States>>? futureStates;
   String? selectedValue;
+  String? selectedLocalGovernment;
   int? selectedValueID;
   final statesDB = StatesDB();
 
@@ -94,11 +95,11 @@ class _HomePageState extends State<HomePage> {
 
                               statesDB
                                   .fetchIdByName(selectedValue!)
-                                  .then((value) => {
-                                        setState(() {
-                                          selectedValueID = value;
-                                        }),
-                                      });
+                                  .then((value) {
+                                setState(() {
+                                  selectedValueID = value;
+                                });
+                              });
                             },
                             items: items.map<DropdownMenuItem<String>>(
                               (String value) {
@@ -110,48 +111,50 @@ class _HomePageState extends State<HomePage> {
                             ).toList(),
                           ),
                         ),
-                        selectedValue == null
-                            ? const SizedBox()
-                            : FutureBuilder<List<LocalGovernment>>(
-                                future: statesDB.fetchLocalGovernmentsByStateId(
-                                  selectedValueID!,
+                        if (selectedValueID != null)
+                          FutureBuilder<List<LocalGovernment>>(
+                            future: statesDB.fetchLocalGovernmentsByStateId(
+                                selectedValueID!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                );
+                              }
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+                              final localGovernments = snapshot.data!;
+
+                              return SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: DropdownButton<String>(
+                                  hint: const Text('Select a local government'),
+                                  value: selectedLocalGovernment,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedLocalGovernment = value;
+                                    });
+                                  },
+                                  items: localGovernments
+                                      .map<DropdownMenuItem<String>>(
+                                    (LocalGovernment lg) {
+                                      return DropdownMenuItem<String>(
+                                        value: lg.lgName,
+                                        child: Text(lg.lgName),
+                                      );
+                                    },
+                                  ).toList(),
                                 ),
-                                builder: (context, snapshot) {
-                                  final statesLG = snapshot.data!;
-
-                                  print(
-                                      "This is state's Lg ${statesLG[0].lgName}");
-
-                                  List<String> itemsLG = [];
-
-                                  // Iterate through each state and add its text to the items list
-                                  for (var statelg in statesLG) {
-                                    itemsLG.add(statelg.lgName);
-                                  }
-
-                                  return SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: DropdownButton<String>(
-                                      hint: const Text(
-                                        'Select a local government',
-                                      ),
-                                      value: selectedValue,
-                                      onChanged: (String? value) {},
-                                      items:
-                                          itemsLG.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        },
-                                      ).toList(),
-                                    ),
-                                  );
-                                },
-                              )
+                              );
+                            },
+                          ),
                       ],
                     );
+
             },
           ),
         ),
