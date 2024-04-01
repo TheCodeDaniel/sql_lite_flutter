@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:untitled/db/states_db.dart';
 import 'package:untitled/model/states_model.dart';
 import 'package:untitled/widgets/create_state.dart';
@@ -70,9 +69,11 @@ class _EditPageState extends State<EditPage> {
                 return states.isEmpty
                     ? const Center(
                         child: Text(
-                          "No states...",
+                          "Click '+' to add states",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                          ),
                         ),
                       )
                     : ListView.separated(
