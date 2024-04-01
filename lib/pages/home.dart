@@ -20,8 +20,16 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-          child: const Column(
-            children: [],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 40),
+              Center(
+                child: Text("Select a state and local government"),
+              ),
+              SizedBox(height: 10),
+              
+            ],
           ),
         ),
       ),
