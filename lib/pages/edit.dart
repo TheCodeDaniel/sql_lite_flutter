@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/db/states_db.dart';
 import 'package:untitled/model/states_model.dart';
+import 'package:untitled/pages/lga_edit.dart';
 import 'package:untitled/widgets/create_state.dart';
 
 class EditPage extends StatefulWidget {
@@ -48,7 +49,7 @@ class _EditPageState extends State<EditPage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: const Text("Edit"),
+        title: const Text("Edit States"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -82,7 +83,15 @@ class _EditPageState extends State<EditPage> {
 
                           return ListTile(
                             leading: const Icon(Icons.location_on),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return LgaManager(stateId: state.id);
+                                  },
+                                ),
+                              );
+                            },
                             // contentPadding: EdgeInsets.zero,
                             tileColor: Colors.deepPurpleAccent.withOpacity(0.1),
                             shape: RoundedRectangleBorder(

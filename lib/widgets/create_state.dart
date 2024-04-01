@@ -29,17 +29,17 @@ class _CreateStateWidgetState extends State<CreateStateWidget> {
   Widget build(BuildContext context) {
     final isEditing = widget.state != null;
     return AlertDialog(
-      title: Text(isEditing ? "Edit state" : "Add a state"),
+      title: Text(isEditing ? "Edit state" : "Add / Edit"),
       content: Form(
         key: formKey,
         child: TextFormField(
           autofocus: true,
           controller: controller,
           decoration: const InputDecoration(
-            hintText: 'State name',
+            hintText: 'name',
           ),
           validator: (value) =>
-              value != null && value.isEmpty ? 'State name is required' : null,
+              value != null && value.isEmpty ? 'name is required' : null,
         ),
       ),
       actions: [

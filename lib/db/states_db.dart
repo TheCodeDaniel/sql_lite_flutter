@@ -22,7 +22,7 @@ class StatesDB {
   )""");
   }
 
-  // STATES SECTION------------------
+  // STATES----
 
   // create
   Future<int> create({required String stateName}) async {
@@ -76,7 +76,7 @@ class StatesDB {
     );
   }
 
-  // LOCAL GOVERNMENT SECTION
+  // LOCAL GOVERNMENT----
 
   // create local government
   Future<int> createLocalGovernment({

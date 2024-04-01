@@ -1,14 +1,15 @@
-class LocalGovernment{
+class LocalGovernment {
   final int id;
-  final String stateName;
+  final String lgName;
 
   LocalGovernment({
     required this.id,
-    required this.stateName,
+    required this.lgName,
   });
 
-  factory LocalGovernment.fromSqfliteDatabase(Map<String, dynamic> map) => LocalGovernment(
+  factory LocalGovernment.fromSqfliteDatabase(Map<String, dynamic> map) =>
+      LocalGovernment(
         id: map['id'] ?? 0,
-        stateName: map['stateName'] ?? '',
+        lgName: map['localGovernmentName'] ?? '',
       );
 }
