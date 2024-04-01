@@ -80,20 +80,24 @@ class _EditPageState extends State<EditPage> {
                           final state = states[index];
 
                           return ListTile(
+                            leading: const Icon(Icons.location_on),
                             onTap: () {},
-                            contentPadding: EdgeInsets.zero,
-                            // tileColor: Colors.deepPurple.withOpacity(0.1),
+                            // contentPadding: EdgeInsets.zero,
+                            tileColor: Colors.deepPurpleAccent.withOpacity(0.1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             title: Text(
                               states[index].stateName,
+                              style: const TextStyle(
+                                fontSize: 15,
+                              ),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
+                                IconButton(
+                                  onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => CreateStateWidget(
@@ -109,17 +113,17 @@ class _EditPageState extends State<EditPage> {
                                       ),
                                     );
                                   },
-                                  child: const Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit, size: 20),
                                 ),
-                                const SizedBox(width: 40),
-                                GestureDetector(
-                                  onTap: () async {
+                                const SizedBox(width: 10),
+                                IconButton(
+                                  onPressed: () async {
                                     await statesDB.delete(state.id);
                                     fetchStates();
                                   },
-                                  child: const Icon(
-                                    Icons.delete_forever,
-                                    color: Colors.red,
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.redAccent,
                                   ),
                                 ),
                               ],
