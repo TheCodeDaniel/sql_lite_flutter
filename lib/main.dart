@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/home.dart';
+import 'package:untitled/router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +17,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const HomePage(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        fontFamily: "WorkSans",
+      ),
+      home: const PageRouter(),
     );
   }
 }
